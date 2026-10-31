@@ -1,8 +1,11 @@
 package tn.esprit.autoloc.web.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Employe;
+import tn.esprit.autoloc.dto.EmployeRequest;
+import tn.esprit.autoloc.dto.EmployeResponse;
 import tn.esprit.autoloc.service.IEmployeService;
 import java.util.List;
 
@@ -14,27 +17,28 @@ public class EmployeController {
     private final IEmployeService employeService;
 
     @GetMapping
-    public List<Employe> retrieveAllEmployes() {
+    public List<EmployeResponse> retrieveAllEmployes() {
         return employeService.retrieveAllEmployes();
     }
 
     @PostMapping
-    public Employe addEmploye(@RequestBody Employe e) {
+    public EmployeResponse addEmploye(@Valid @RequestBody EmployeRequest e) {
         return employeService.addEmploye(e);
     }
 
-    @PutMapping
-    public Employe updateEmploye(@RequestBody Employe e) {
-        return employeService.updateEmploye(e);
+    @PutMapping("/{id}")
+    public EmployeResponse updateEmploye(@PathVariable @Positive Long id,
+                                         @Valid @RequestBody EmployeRequest e) {
+        return employeService.updateEmploye(id, e);
     }
 
     @GetMapping("/{id}")
-    public Employe retrieveEmploye(@PathVariable Long id) {
+    public EmployeResponse retrieveEmploye(@PathVariable @Positive Long id) {
         return employeService.retrieveEmploye(id);
     }
 
     @DeleteMapping("/{id}")
-    public void removeEmploye(@PathVariable Long id) {
+    public void removeEmploye(@PathVariable @Positive Long id) {
         employeService.removeEmploye(id);
     }
 }

@@ -1,8 +1,11 @@
 package tn.esprit.autoloc.web.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Contrat;
+import tn.esprit.autoloc.dto.ContratRequest;
+import tn.esprit.autoloc.dto.ContratResponse;
 import tn.esprit.autoloc.service.IContratService;
 import java.util.List;
 
@@ -14,27 +17,28 @@ public class ContratController {
     private final IContratService contratService;
 
     @GetMapping
-    public List<Contrat> retrieveAllContrats() {
+    public List<ContratResponse> retrieveAllContrats() {
         return contratService.retrieveAllContrats();
     }
 
     @PostMapping
-    public Contrat addContrat(@RequestBody Contrat c) {
+    public ContratResponse addContrat(@Valid @RequestBody ContratRequest c) {
         return contratService.addContrat(c);
     }
 
-    @PutMapping
-    public Contrat updateContrat(@RequestBody Contrat c) {
-        return contratService.updateContrat(c);
+    @PutMapping("/{id}")
+    public ContratResponse updateContrat(@PathVariable @Positive Long id,
+                                         @Valid @RequestBody ContratRequest c) {
+        return contratService.updateContrat(id, c);
     }
 
     @GetMapping("/{id}")
-    public Contrat retrieveContrat(@PathVariable Long id) {
+    public ContratResponse retrieveContrat(@PathVariable @Positive Long id) {
         return contratService.retrieveContrat(id);
     }
 
     @DeleteMapping("/{id}")
-    public void removeContrat(@PathVariable Long id) {
+    public void removeContrat(@PathVariable @Positive Long id) {
         contratService.removeContrat(id);
     }
 }

@@ -4,9 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Vehicule;
+import tn.esprit.autoloc.dto.VehiculeRequest;
+import tn.esprit.autoloc.dto.VehiculeResponse;
 import tn.esprit.autoloc.service.IVehiculeService;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class VehiculeController {
             @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès")
     })
     @GetMapping
-    public List<Vehicule> retrieveAllVehicules() {
+    public List<VehiculeResponse> retrieveAllVehicules() {
         return vehiculeService.retrieveAllVehicules();
     }
 
@@ -33,18 +36,20 @@ public class VehiculeController {
             @ApiResponse(responseCode = "400", description = "Corps de requête invalide")
     })
     @PostMapping
-    public Vehicule addVehicule(@RequestBody Vehicule v) {
+    public VehiculeResponse addVehicule(@Valid @RequestBody VehiculeRequest v) {
         return vehiculeService.addVehicule(v);
     }
 
-    @Operation(summary = "Mettre à jour un véhicule", description = "Met à jour un véhicule existant à partir du JSON envoyé")
+    @Operation(summary = "Mettre à jour un véhicule", description = "Met à jour le véhicule dont l'id est passé dans le chemin")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Véhicule mis à jour"),
-            @ApiResponse(responseCode = "400", description = "Corps de requête invalide")
+            @ApiResponse(responseCode = "400", description = "Corps de requête invalide"),
+            @ApiResponse(responseCode = "404", description = "Véhicule non trouvé")
     })
-    @PutMapping
-    public Vehicule updateVehicule(@RequestBody Vehicule v) {
-        return vehiculeService.updateVehicule(v);
+    @PutMapping("/{id}")
+    public VehiculeResponse updateVehicule(@PathVariable @Positive Long id,
+                                           @Valid @RequestBody VehiculeRequest v) {
+        return vehiculeService.updateVehicule(id, v);
     }
 
     @Operation(summary = "Consulter un véhicule", description = "Retourne le véhicule correspondant à l'id envoyé")
@@ -53,7 +58,7 @@ public class VehiculeController {
             @ApiResponse(responseCode = "404", description = "Véhicule non trouvé")
     })
     @GetMapping("/{id}")
-    public Vehicule retrieveVehicule(@PathVariable Long id) {
+    public VehiculeResponse retrieveVehicule(@PathVariable @Positive Long id) {
         return vehiculeService.retrieveVehicule(id);
     }
 
@@ -63,7 +68,7 @@ public class VehiculeController {
             @ApiResponse(responseCode = "404", description = "Véhicule non trouvé")
     })
     @DeleteMapping("/{id}")
-    public void removeVehicule(@PathVariable Long id) {
+    public void removeVehicule(@PathVariable @Positive Long id) {
         vehiculeService.removeVehicule(id);
     }
 }

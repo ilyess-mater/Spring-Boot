@@ -4,9 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Client;
+import tn.esprit.autoloc.dto.ClientRequest;
+import tn.esprit.autoloc.dto.ClientResponse;
 import tn.esprit.autoloc.service.IClientService;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class ClientController {
             @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès")
     })
     @GetMapping
-    public List<Client> retrieveAllClients() {
+    public List<ClientResponse> retrieveAllClients() {
         return clientService.retrieveAllClients();
     }
 
@@ -33,18 +36,20 @@ public class ClientController {
             @ApiResponse(responseCode = "400", description = "Corps de requête invalide")
     })
     @PostMapping
-    public Client addClient(@RequestBody Client c) {
+    public ClientResponse addClient(@Valid @RequestBody ClientRequest c) {
         return clientService.addClient(c);
     }
 
-    @Operation(summary = "Mettre à jour un client", description = "Met à jour un client existant à partir du JSON envoyé")
+    @Operation(summary = "Mettre à jour un client", description = "Met à jour le client dont l'id est passé dans le chemin")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client mis à jour"),
-            @ApiResponse(responseCode = "400", description = "Corps de requête invalide")
+            @ApiResponse(responseCode = "400", description = "Corps de requête invalide"),
+            @ApiResponse(responseCode = "404", description = "Client non trouvé")
     })
-    @PutMapping
-    public Client updateClient(@RequestBody Client c) {
-        return clientService.updateClient(c);
+    @PutMapping("/{id}")
+    public ClientResponse updateClient(@PathVariable @Positive Long id,
+                                       @Valid @RequestBody ClientRequest c) {
+        return clientService.updateClient(id, c);
     }
 
     @Operation(summary = "Consulter un client", description = "Retourne le client correspondant à l'id envoyé")
@@ -53,7 +58,7 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Client non trouvé")
     })
     @GetMapping("/{id}")
-    public Client retrieveClient(@PathVariable Long id) {
+    public ClientResponse retrieveClient(@PathVariable @Positive Long id) {
         return clientService.retrieveClient(id);
     }
 
@@ -63,7 +68,7 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Client non trouvé")
     })
     @DeleteMapping("/{id}")
-    public void removeClient(@PathVariable Long id) {
+    public void removeClient(@PathVariable @Positive Long id) {
         clientService.removeClient(id);
     }
 }

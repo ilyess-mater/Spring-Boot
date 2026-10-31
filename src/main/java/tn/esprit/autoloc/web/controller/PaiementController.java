@@ -1,8 +1,11 @@
 package tn.esprit.autoloc.web.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.autoloc.domain.Paiement;
+import tn.esprit.autoloc.dto.PaiementRequest;
+import tn.esprit.autoloc.dto.PaiementResponse;
 import tn.esprit.autoloc.service.IPaiementService;
 import java.util.List;
 
@@ -14,27 +17,28 @@ public class PaiementController {
     private final IPaiementService paiementService;
 
     @GetMapping
-    public List<Paiement> retrieveAllPaiements() {
+    public List<PaiementResponse> retrieveAllPaiements() {
         return paiementService.retrieveAllPaiements();
     }
 
     @PostMapping
-    public Paiement addPaiement(@RequestBody Paiement p) {
+    public PaiementResponse addPaiement(@Valid @RequestBody PaiementRequest p) {
         return paiementService.addPaiement(p);
     }
 
-    @PutMapping
-    public Paiement updatePaiement(@RequestBody Paiement p) {
-        return paiementService.updatePaiement(p);
+    @PutMapping("/{id}")
+    public PaiementResponse updatePaiement(@PathVariable @Positive Long id,
+                                           @Valid @RequestBody PaiementRequest p) {
+        return paiementService.updatePaiement(id, p);
     }
 
     @GetMapping("/{id}")
-    public Paiement retrievePaiement(@PathVariable Long id) {
+    public PaiementResponse retrievePaiement(@PathVariable @Positive Long id) {
         return paiementService.retrievePaiement(id);
     }
 
     @DeleteMapping("/{id}")
-    public void removePaiement(@PathVariable Long id) {
+    public void removePaiement(@PathVariable @Positive Long id) {
         paiementService.removePaiement(id);
     }
 }

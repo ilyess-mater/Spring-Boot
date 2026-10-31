@@ -1,13 +1,14 @@
 package tn.esprit.autoloc.service;
 
-import tn.esprit.autoloc.domain.Vehicule;
+import tn.esprit.autoloc.dto.VehiculeRequest;
+import tn.esprit.autoloc.dto.VehiculeResponse;
 import java.util.List;
 
 public interface IVehiculeService {
-    List<Vehicule> retrieveAllVehicules();
-    Vehicule addVehicule(Vehicule v);
-    Vehicule updateVehicule(Vehicule v);
-    Vehicule retrieveVehicule(Long idVehicule);
+    List<VehiculeResponse> retrieveAllVehicules();
+    VehiculeResponse addVehicule(VehiculeRequest v);
+    VehiculeResponse updateVehicule(Long idVehicule, VehiculeRequest v);
+    VehiculeResponse retrieveVehicule(Long idVehicule);
     void removeVehicule(Long idVehicule);
-    List<Vehicule> addVehicules(List<Vehicule> vehicules);
+    List<VehiculeResponse> addVehicules(List<VehiculeRequest> vehicules);
 }
